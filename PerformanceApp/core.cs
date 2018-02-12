@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using static PerformanceApp.MainWindow;
+using static PerformanceApp.Core.Globals;
 
 namespace PerformanceApp
 {
@@ -49,7 +50,8 @@ namespace PerformanceApp
             public static string root = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System));
             public static string PERFORMANCE_LOG_PATH = root + @"\IPA_Performance_Logs";
             public static string StationID;
-            public static IPAddress StationIP;
+            public static string StationIP;
+            public static bool ConfigHidden = true;
         }
 
         public static void PopupMsg(string title, string message)
@@ -60,30 +62,26 @@ namespace PerformanceApp
         public static void UninstallApp(App appName)
         {
             // Uninstall application
-            //Directory.SetCurrentDirectory(appName.Inst_Dir);
-            Process.Start(appName.Inst_Dir + @"\unins000.exe");
-            Thread.Sleep(2000);
+            var process = Process.Start(appName.Inst_Dir + @"\unins000.exe");
             Process[] runningProcs = Process.GetProcesses();
 
-            foreach (string pName in Globals.ArrProcs)
-            {
-                foreach (Process p in runningProcs)
-                {
-                    if(p.ToString().Contains(pName))
-                    {
-                        Console.WriteLine("Application " + pName + " found");
-                        Console.WriteLine(p.Id);
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                //Thread.Sleep(1000);
-                //Console.WriteLine(p.ProcessName);
-            }
-            //while (Get - WmiObject win32_process | Where - Object {
-            //    _.processid == prog.processid));
+            process.WaitForExit();
+
+            //foreach (string pName in ArrProcs)
+            //{
+            //    foreach (Process p in runningProcs)
+            //    {
+            //        if (p.ToString().Contains(pName))
+            //        {
+            //            Console.WriteLine("Application " + pName + " found");
+            //            Console.WriteLine(p.Id);
+            //        }
+            //        else
+            //        {
+            //            continue;
+            //        }
+            //    }
+            //}
 
             if (Prop32Bit(appName.Key32) == null)
                 {
@@ -95,7 +93,6 @@ namespace PerformanceApp
                 }
 
                 UpdateVersions(true);
-            //}
         }
 
         public static string Prop32Bit(string keyName)
@@ -114,12 +111,12 @@ namespace PerformanceApp
                     // those manually after verifying a version number exists  
                     if (keyName.Contains("IPA Util"))
                     {
-                        return (string)rk.GetValue("IPA Utilities " + Globals.Util.User_Ver); ;
+                        return (string)rk.GetValue("IPA Utilities " + Util.User_Ver); ;
                         //(env:SystemDrive)\IPA Utilities (Util.User_Ver)";
                     }
                     if (keyName.Contains("GE Cont"))
                     {
-                        return (string)rk.GetValue("GE Control App " + Globals.GECA.User_Ver); ;
+                        return (string)rk.GetValue("GE Control App " + GECA.User_Ver); ;
                         //"(env:SystemDrive)\GE Control App (GECA.User_Ver)";
                     }
 
@@ -148,12 +145,12 @@ namespace PerformanceApp
                 // IPA Utilities and GECA do not have an install path in the registry so set those manually after verifying a version number exists  
                 if (keyName.Contains("IPA Util"))
                 {
-                    return (string)rk.GetValue("IPA Utilities " + Globals.Util.User_Ver); ;
+                    return (string)rk.GetValue("IPA Utilities " + Util.User_Ver); ;
                     //(env:SystemDrive)\IPA Utilities (Util.User_Ver)";
                 }
                 if (keyName.Contains("GE Cont"))
                 {
-                    return (string)rk.GetValue("GE Control App " + Globals.GECA.User_Ver); ;
+                    return (string)rk.GetValue("GE Control App " + GECA.User_Ver); ;
                     //"(env:SystemDrive)\GE Control App (GECA.User_Ver)";
                 }
 
@@ -165,20 +162,32 @@ namespace PerformanceApp
 
         public static void ClosePrograms()
         {
-            for (var i = 0; i < Globals.ArrProcs.Length; i++)
-            {
+            Process[] runningProcs = Process.GetProcesses();
 
-                // Get - WmiObject win32_process | Where - Object { _.Name - Like "*(arrProcs(i))*" };
+            foreach (string pName in ArrProcs)
+            {
+                foreach (Process p in runningProcs)
+                {
+                    if (p.ToString().Contains(pName))
+                    {
+                        Console.WriteLine("Application " + pName + " found");
+                        Console.WriteLine(p.Id);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
             }
         }
 
         public static void ClearLogs()
         {
             #region Clear all previous log files
-            if (Directory.Exists(Globals.PERFORMANCE_LOG_PATH))
+            if (Directory.Exists(PERFORMANCE_LOG_PATH))
             {
-                PopupMsg("Removing old logs", "Deleting Old Performance Logs from : " + Globals.PERFORMANCE_LOG_PATH);
-                DirectoryInfo di = new DirectoryInfo(Globals.PERFORMANCE_LOG_PATH);
+                PopupMsg("Removing old logs", "Deleting Old Performance Logs from : " + PERFORMANCE_LOG_PATH);
+                DirectoryInfo di = new DirectoryInfo(PERFORMANCE_LOG_PATH);
                 foreach (FileInfo file in di.GetFiles())
                 {
                     file.Delete();
@@ -190,7 +199,7 @@ namespace PerformanceApp
             }
             else
             {
-                PopupMsg("Folder missing", Globals.PERFORMANCE_LOG_PATH + " not found.");
+                PopupMsg("Folder missing", PERFORMANCE_LOG_PATH + " not found.");
             }
             #endregion
         }
@@ -206,27 +215,27 @@ namespace PerformanceApp
 
         public static void UpdateConfigs()
         {
-            if (Globals.StationID != "Server") // if station ID is not server do this
+            if (StationID != "Server") // if station ID is not server do this
             {
                 XmlDocument xml = new XmlDocument();
 
                 // Store configuration file locations to variables
-                string IPAConfig = Globals.IPA.Inst_Dir + @"\Support\configuration.xml";
-                string DVRConfig = Globals.DVR.Inst_Dir + @"\Support\configuration.xml";
-                string XBCAConfig = Globals.XBCA.Inst_Dir + @"\Support\xbox_controller_app_config.xml";
+                string IPAConfig = IPA.Inst_Dir + @"\Support\configuration.xml";
+                string DVRConfig = DVR.Inst_Dir + @"\Support\configuration.xml";
+                string XBCAConfig = XBCA.Inst_Dir + @"\Support\xbox_controller_app_config.xml";
 
                 // Update IPA Configuration xml
                 xml.Load(IPAConfig);
                 XmlNode sensor = xml.SelectSingleNode("//Sensor[@id=\"M1\"]/IsLegacy");
                 sensor.InnerText = "false";
                 XmlNode identity = xml.SelectSingleNode("//Identity[@Id=\"IdentityConfig\"]/StationId");
-                identity.InnerText = Globals.StationID;
+                identity.InnerText = StationID;
                 XmlNode server = xml.SelectSingleNode("//SA2S_Client[@Id=\"SA2SClientConfig\"]/LocalIp");
-                server.InnerText = Globals.StationIP.ToString();
+                server.InnerText = StationIP.ToString();
                 XmlNode mapPath = xml.SelectSingleNode("//MapPath[@Id=\"MapPathConfig\"]/MapPath");
                 mapPath.InnerText = @"E:\1.NAVPLAN^E:\1.World_DTED_Lv1^E:\2.NORTHCOM^E:\2_CENTCOM_OIF^E:\2_NORTHCOM_Partial^E:\3_CentCom_OEF^E:\4_JSOTFFVW^E:\4_JSOTFP^E:\6.World_TLM^E:\ForceX_AreaMaps^E:\Nashville Maps";
                 // Setup IPA video config for the corresponding workstation
-                if (Globals.StationID != "OP1")
+                if (StationID != "OP1")
                 {
                     // Disable video streams one, two and three on the laptop stations
                     XmlNode vidOne = xml.SelectSingleNode("//VideoSettingsCollection/Videos[@Id=\"MTS-A VIC SD DC\"]/IsActive");
@@ -241,7 +250,7 @@ namespace PerformanceApp
                 // Update DVR Configuration xml
                 xml.Load(DVRConfig);
                 server = xml.SelectSingleNode("//SA2S_Client[@Id=\"SA2SClientConfig\"]/LocalIp");
-                server.InnerText = Globals.StationIP.ToString();
+                server.InnerText = StationIP.ToString();
                 xml.Save(DVRConfig); // Save xml changes to original source file
 
                 // Update XBCA Configuration xml
@@ -255,7 +264,7 @@ namespace PerformanceApp
                 XmlDocument xml = new XmlDocument();
 
                 // Store configuration file location to variable
-                string IPASConfig = Globals.IPAS.Inst_Dir + @"\Master Configs\IPAS.PRI.config.xml";
+                string IPASConfig = IPAS.Inst_Dir + @"\Master Configs\IPAS.PRI.config.xml";
                 xml.Load(IPASConfig);
                 XmlNode node = xml.SelectSingleNode(@"\base_configuration\config_section\base_config_section");
                 // node = xml.base_configuration.config_sections.base_config_section;
@@ -336,7 +345,7 @@ namespace PerformanceApp
             UpdateConfigs();
 
             // Start Applications
-            foreach (App app in Globals.Apps)
+            foreach (App app in Apps)
             {
                 if (app.Name == "Util" || app.Name == "LCU" || app.Name == "MP")
                 {
@@ -347,11 +356,11 @@ namespace PerformanceApp
                 {
                     if (app.Name == "IPA")
                     {
-                        //Start-Process app.Inst_Dir + @"\bin\" + app.Exec [-Performance];
+                        Process.Start(app.Inst_Dir + @"\bin\" + app.Exec, "-Performance");
                     }
                     else
                     {
-                        //Start-Process app.Inst_Dir + @ "\bin\" + app.Exec;
+                        Process.Start(app.Inst_Dir + @"\bin\" + app.Exec);
                     }
                 }
             }

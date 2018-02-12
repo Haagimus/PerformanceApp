@@ -5,20 +5,126 @@ using System.Drawing;
 using System.Net;
 using System.Windows.Forms;
 using static PerformanceApp.Core;
+using static PerformanceApp.Core.Globals;
 
 namespace PerformanceApp
 {
     public partial class MainWindow : Form
     {
+        int PW;
+
         public MainWindow()
         {
             InitializeComponent();
+            PW = pnl_Config.Width;
         }
 
         public void MainWindow_Load(object sender, EventArgs e)
         {
             SetLists();
             UpdateVersions(false);
+        }
+
+        public void SetLists()
+        {
+            if (firstRun)
+            {
+                firstRun = false;
+                StationID = "Workstation";
+            }
+
+            Apps.Clear();
+            List_VerLbls.Clear();
+            List_UninBtns.Clear();
+            List_CurBtns.Clear();
+
+            if (StationID == "Workstation")
+            {
+                // Update lists
+                Apps.AddRange(new App[] { IPA, DVR, XBCA, Util, LCU });
+                List_VerLbls.AddRange(new Label[] { lbl_IPAVer, lbl_DVRVer, lbl_XBCAVer, lbl_UtilVer, lbl_LCUVer });
+                List_UninBtns.AddRange(new Button[] { btn_IPAUninstall, btn_DVRUninstall, btn_XBCAUninstall, btn_UtilUninstall, btn_LCUUninstall });
+                List_CurBtns.AddRange(new Button[] { btn_IPACurrent, btn_DVRCurrent, btn_XBCACurrent, btn_UtilCurrent, btn_LCUCurrent });
+            }
+            else
+            {
+                // Update lists
+                Apps.AddRange(new App[] { IPAS, Util, GECA, LCU, MP });
+                List_VerLbls.AddRange(new Label[] { lbl_IPASVer, lbl_UtilVer, lbl_GECAVer, lbl_LCUVer, lbl_MPVer });
+                List_UninBtns.AddRange(new Button[] { btn_IPASUninstall, btn_UtilUninstall, btn_GECAUninstall, btn_LCUUninstall, btn_MPUninstall });
+                List_CurBtns.AddRange(new Button[] { btn_IPASCurrent, btn_UtilCurrent, btn_GECACurrent, btn_LCUCurrent, btn_MPCurrent });
+            }
+
+            UpdateVersions(false);
+        }
+
+        public static void UpdateVersions(bool skipCurrent)
+        {
+            for (var i = 0; i < Apps.Count; i++)
+            {
+                if (Prop32Bit(Apps[i].Key32) != null)
+                {
+                    RegistryKey rk = Registry.LocalMachine.OpenSubKey(Apps[i].Key32);
+                    Apps[i].Inst_Dir = (string)rk.GetValue("Install Path");
+                    Apps[i].keyName = (string)rk.GetValue("Application Name");
+                    Apps[i].Inst_Ver = (string)rk.GetValue("Version");
+                    Apps[i].Installed = true;
+                }
+                else if (Prop64Bit(Apps[i].Key64) != null)
+                {
+                    RegistryKey rk = Registry.LocalMachine.OpenSubKey(Apps[i].Key64);
+                    Apps[i].Inst_Dir = (string)rk.GetValue("Install Path");
+                    Apps[i].keyName = (string)rk.GetValue("Application Name");
+                    Apps[i].Inst_Ver = (string)rk.GetValue("Version");
+                    Apps[i].Installed = true;
+                }
+                else
+                {
+                    Apps[i].Inst_Dir = null;
+                    Apps[i].keyName = null;
+                    Apps[i].Inst_Ver = "Not Installed";
+                    Apps[i].Installed = false;
+                }
+            }
+
+            // Update version labels
+            for (var i = 0; i < List_VerLbls.Count; i++)
+            {
+                List_VerLbls[i].Text = Apps[i].Inst_Ver;
+            }
+
+            // Update uninstall buttons
+            for (var i = 0; i < List_UninBtns.Count; i++)
+            {
+                if (Apps[i].Installed)
+                {
+                    List_UninBtns[i].Enabled = true;
+                }
+                else
+                {
+                    List_UninBtns[i].Enabled = false;
+                }
+            }
+
+            // Update current buttons
+            if (!skipCurrent)
+            {
+                for (var i = 0; i < List_CurBtns.Count; i++)
+                {
+                    if (Apps[i].Installed)
+                    {
+                        List_CurBtns[i].Enabled = true;
+                        List_CurBtns[i].BackColor = Color.DarkRed;
+                        List_CurBtns[i].ForeColor = Color.White;
+                    }
+                    else
+                    {
+                        List_CurBtns[i].ForeColor = SystemColors.ControlDark;
+                        List_CurBtns[i].BackColor = SystemColors.Control;
+                        List_CurBtns[i].Enabled = false;
+                    }
+                }
+            }
         }
 
         public static void SetStation()
@@ -28,27 +134,32 @@ namespace PerformanceApp
             {
                 if (ip.AddressFamily.ToString() == "192.168.1.1")
                 {
-                    Globals.StationID = "OP1";
+                    StationID = "OP1";
+                    StationIP = ip.AddressFamily.ToString();
                 }
 
                 if (ip.AddressFamily.ToString() == "192.168.1.2")
                 {
-                    Globals.StationID = "Server";
+                    StationID = "Server";
+                    StationIP = ip.AddressFamily.ToString();
                 }
 
                 if (ip.AddressFamily.ToString() == "192.168.1.3")
                 {
-                    Globals.StationID = "LM";
+                    StationID = "LM";
+                    StationIP = ip.AddressFamily.ToString();
                 }
 
                 if (ip.AddressFamily.ToString() == "192.168.1.4")
                 {
-                    Globals.StationID = "FD1";
+                    StationID = "FD1";
+                    StationIP = ip.AddressFamily.ToString();
                 }
 
                 if (ip.AddressFamily.ToString() == "192.168.1.5")
                 {
-                    Globals.StationID = "FD2";
+                    StationID = "FD2";
+                    StationIP = ip.AddressFamily.ToString();
                 }
             }
         }
@@ -57,210 +168,27 @@ namespace PerformanceApp
         {
             ComboBox comboBox = (ComboBox)sender;
 
-            Globals.StationID = (string)comboBox.SelectedItem;
+            StationID = (string)comboBox.SelectedItem;
             UpdateStation(comboBox);
-        }
-
-        public void CurrentClick(object sender, EventArgs e)
-        {
-            Button button = (Button)sender;
-            App a = null;
-
-            if (button.Name == "btn_IPACurrent")
-            {
-                a = Globals.IPA;
-            }
-            if (button.Name == "btn_IPASCurrent")
-            {
-                a = Globals.IPAS;
-            }
-            if (button.Name == "btn_DVRCurrent")
-            {
-                a = Globals.DVR;
-            }
-            if (button.Name == "btn_XBCACurrent")
-            {
-                a = Globals.XBCA;
-            }
-            if (button.Name == "btn_UtilCurrent")
-            {
-                a = Globals.Util;
-            }
-            if (button.Name == "btn_GECACurrent")
-            {
-                a = Globals.GECA;
-            }
-            if (button.Name == "btn_LCUCurrent")
-            {
-                a = Globals.LCU;
-            }
-            if (button.Name == "btn_MPCurrent")
-            {
-                a = Globals.MP;
-            }
-
-            if (a.Current)
-            {
-                button.BackColor = Color.DarkRed;
-                button.ForeColor = Color.White;
-                a.Current = false;
-            }
-            else
-            {
-                button.BackColor = Color.Green;
-                button.ForeColor = Color.White;
-                a.Current = true;
-            }
-
-            var cnt = 0;
-
-            foreach (App app in Globals.Apps)
-            {
-                if (app.Current == true)
-                {
-                    cnt++;
-                }
-            }
-
-            // UPDATE THIS TO ENABLED EQUALS CNT
-            if ((Globals.List_CurBtns).Count == cnt)
-            {
-                btn_Run.Enabled = true;
-            }
-            else
-            {
-                btn_Run.Enabled = false;
-            }
-
-        }
-
-        private void RunUninstaller(object sender, EventArgs e)
-        {
-            Button button = (Button)sender;
-            App a = null;
-
-            if (button.Name == "btn_IPAUninstall")
-            {
-                a = Globals.IPA;
-            }
-            if (button.Name == "btn_IPASUninstall")
-            {
-                a = Globals.IPAS;
-            }
-            if (button.Name == "btn_DVRUninstall")
-            {
-                a = Globals.DVR;
-            }
-            if (button.Name == "btn_XBCAUninstall")
-            {
-                a = Globals.XBCA;
-            }
-            if (button.Name == "btn_UtilUninstall")
-            {
-                a = Globals.Util;
-            }
-            if (button.Name == "btn_GECAUninstall")
-            {
-                a = Globals.GECA;
-            }
-            if (button.Name == "btn_LCUUninstall")
-            {
-                a = Globals.LCU;
-            }
-            if (button.Name == "btn_MPUninstall")
-            {
-                a = Globals.MP;
-            }
-
-            UninstallApp(a);
-        }
-
-        public static void UpdateVersions(bool skipCurrent)
-        {
-            for (var i = 0; i < Globals.Apps.Count; i++)
-            {
-                if (Prop32Bit(Globals.Apps[i].Key32) != null)
-                {
-                    RegistryKey rk = Registry.LocalMachine.OpenSubKey(Globals.Apps[i].Key32);
-                    Globals.Apps[i].Inst_Dir = (string)rk.GetValue("Install Path");
-                    Globals.Apps[i].keyName = (string)rk.GetValue("Application Name");
-                    Globals.Apps[i].Inst_Ver = (string)rk.GetValue("Version");
-                    Globals.Apps[i].Installed = true;
-                }
-                else if (Prop64Bit(Globals.Apps[i].Key64) != null)
-                {
-                    RegistryKey rk = Registry.LocalMachine.OpenSubKey(Globals.Apps[i].Key64);
-                    Globals.Apps[i].Inst_Dir = (string)rk.GetValue("Install Path");
-                    Globals.Apps[i].keyName = (string)rk.GetValue("Application Name");
-                    Globals.Apps[i].Inst_Ver = (string)rk.GetValue("Version");
-                    Globals.Apps[i].Installed = true;
-                }
-                else
-                {
-                    Globals.Apps[i].Inst_Dir = null;
-                    Globals.Apps[i].keyName = null;
-                    Globals.Apps[i].Inst_Ver = "Not Installed";
-                    Globals.Apps[i].Installed = false;
-                }
-            }
-
-            // Update version labels
-            for (var i = 0; i < Globals.List_VerLbls.Count; i++)
-            {
-                Globals.List_VerLbls[i].Text = Globals.Apps[i].Inst_Ver;
-            }
-
-            // Update uninstall buttons
-            for (var i = 0; i < Globals.List_UninBtns.Count; i++)
-            {
-                if (Globals.Apps[i].Installed)
-                {
-                    Globals.List_UninBtns[i].Enabled = true;
-                }
-                else
-                {
-                    Globals.List_UninBtns[i].Enabled = false;
-                }
-            }
-
-            // Update current buttons
-            if (!skipCurrent)
-            {
-                for (var i = 0; i < Globals.List_CurBtns.Count; i++)
-                {
-                    if (Globals.Apps[i].Installed)
-                    {
-                        Globals.List_CurBtns[i].Enabled = true;
-                        Globals.List_CurBtns[i].BackColor = Color.DarkRed;
-                        Globals.List_CurBtns[i].ForeColor = Color.White;
-                    }
-                    else
-                    {
-                        Globals.List_CurBtns[i].ForeColor = SystemColors.ControlDark;
-                        Globals.List_CurBtns[i].BackColor = SystemColors.Control;
-                        Globals.List_CurBtns[i].Enabled = false;
-                    }
-                }
-            }
         }
 
         public void UpdateStation(object Sender)
         {
             ComboBox cmb_Station = (ComboBox)Sender;
-            Globals.StationID = (string)cmb_Station.SelectedItem;
+            StationID = (string)cmb_Station.SelectedItem;
             btn_Run.Enabled = false;
 
             // Reset current property to false for all apps since si=ystem type has changed
-            Globals.IPA.Current = false;
-            Globals.IPAS.Current = false;
-            Globals.DVR.Current = false;
-            Globals.XBCA.Current = false;
-            Globals.Util.Current = false;
-            Globals.GECA.Current = false;
-            Globals.LCU.Current = false;
-            Globals.MP.Current = false;
+            IPA.Current = false;
+            IPAS.Current = false;
+            DVR.Current = false;
+            XBCA.Current = false;
+            Util.Current = false;
+            GECA.Current = false;
+            LCU.Current = false;
+            MP.Current = false;
 
-            if (Globals.StationID == "Workstation")
+            if (StationID == "Workstation")
             {
                 // Show IPA objects
                 lbl_IPA.Visible = true;
@@ -333,43 +261,187 @@ namespace PerformanceApp
             }
         }
 
+        public void CurrentClick(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            App a = null;
+
+            if (button.Name == "btn_IPACurrent")
+            {
+                a = IPA;
+            }
+            if (button.Name == "btn_IPASCurrent")
+            {
+                a = IPAS;
+            }
+            if (button.Name == "btn_DVRCurrent")
+            {
+                a = DVR;
+            }
+            if (button.Name == "btn_XBCACurrent")
+            {
+                a = XBCA;
+            }
+            if (button.Name == "btn_UtilCurrent")
+            {
+                a = Util;
+            }
+            if (button.Name == "btn_GECACurrent")
+            {
+                a = GECA;
+            }
+            if (button.Name == "btn_LCUCurrent")
+            {
+                a = LCU;
+            }
+            if (button.Name == "btn_MPCurrent")
+            {
+                a = MP;
+            }
+
+            if (a.Current)
+            {
+                button.BackColor = Color.DarkRed;
+                button.ForeColor = Color.White;
+                a.Current = false;
+            }
+            else
+            {
+                button.BackColor = Color.Green;
+                button.ForeColor = Color.White;
+                a.Current = true;
+            }
+
+            var EnabledCnt = 0;
+            var CurrentCnt = 0;
+
+            foreach (App app in Apps)
+            {
+                if (app.Current == true)
+                {
+                    CurrentCnt++;
+                }
+            }
+
+            foreach (Button btn in List_CurBtns)
+            {
+                if (btn.Enabled)
+                {
+                    EnabledCnt++;
+                }
+            }
+
+            // UPDATE THIS TO ENABLED EQUALS CNT
+            if (CurrentCnt == EnabledCnt)
+            {
+                btn_Run.Enabled = true;
+            }
+            else
+            {
+                btn_Run.Enabled = false;
+            }
+
+        }
+
+        private void RunUninstaller(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            App a = null;
+
+            if (button.Name == "btn_IPAUninstall")
+            {
+                a = IPA;
+            }
+            if (button.Name == "btn_IPASUninstall")
+            {
+                a = IPAS;
+            }
+            if (button.Name == "btn_DVRUninstall")
+            {
+                a = DVR;
+            }
+            if (button.Name == "btn_XBCAUninstall")
+            {
+                a = XBCA;
+            }
+            if (button.Name == "btn_UtilUninstall")
+            {
+                a = Util;
+            }
+            if (button.Name == "btn_GECAUninstall")
+            {
+                a = GECA;
+            }
+            if (button.Name == "btn_LCUUninstall")
+            {
+                a = LCU;
+            }
+            if (button.Name == "btn_MPUninstall")
+            {
+                a = MP;
+            }
+
+            UninstallApp(a);
+        }
+
         public void UpdateApps(object sender, EventArgs e)
         {
             UpdateVersions(false);
         }
 
-        public void SetLists()
+        public void StartRun(object sender, EventArgs e)
         {
-            if (Globals.firstRun)
-            {
-                Globals.firstRun = false;
-                Globals.StationID = "Workstation";
-                // cmb_Station.SelectedItem = "Workstation";
-            }
+            RunApplications();
+        }
 
-            Globals.Apps.Clear();
-            Globals.List_VerLbls.Clear();
-            Globals.List_UninBtns.Clear();
-            Globals.List_CurBtns.Clear();
+        private void ConfigPanel(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
 
-            if (Globals.StationID == "Workstation")
+            if(ConfigHidden)
             {
-                // Update lists
-                Globals.Apps.AddRange(new App[] { Globals.IPA, Globals.DVR, Globals.XBCA, Globals.Util, Globals.LCU });
-                Globals.List_VerLbls.AddRange(new Label[] { lbl_IPAVer, lbl_DVRVer, lbl_XBCAVer, lbl_UtilVer, lbl_LCUVer });
-                Globals.List_UninBtns.AddRange(new Button[] { btn_IPAUninstall, btn_DVRUninstall, btn_XBCAUninstall, btn_UtilUninstall, btn_LCUUninstall });
-                Globals.List_CurBtns.AddRange(new Button[] { btn_IPACurrent, btn_DVRCurrent, btn_XBCACurrent, btn_UtilCurrent, btn_LCUCurrent });
+                button.Image = global::PerformanceApp.Properties.Resources.close_icon;
+                tooltip.SetToolTip(btn_Config, "Close the configuration settings");
+                tmr_Config.Start();
+                PW = 425;
             }
             else
             {
-                // Update lists
-                Globals.Apps.AddRange(new App[] { Globals.IPAS, Globals.Util, Globals.GECA, Globals.LCU, Globals.MP });
-                Globals.List_VerLbls.AddRange(new Label[] { lbl_IPASVer, lbl_UtilVer, lbl_GECAVer, lbl_LCUVer, lbl_MPVer });
-                Globals.List_UninBtns.AddRange(new Button[] { btn_IPASUninstall, btn_UtilUninstall, btn_GECAUninstall, btn_LCUUninstall, btn_MPUninstall });
-                Globals.List_CurBtns.AddRange(new Button[] { btn_IPASCurrent, btn_UtilCurrent, btn_GECACurrent, btn_LCUCurrent, btn_MPCurrent });
+                button.Image = global::PerformanceApp.Properties.Resources.menu_icon;
+                tooltip.SetToolTip(btn_Config, "Open the configuration settings");
+                tmr_Config.Start();
+                PW = 24;
             }
-
-            UpdateVersions(false);
         }
+
+        private void Tmr_Config_Tick(object sender, EventArgs e)
+        {
+            if(ConfigHidden)
+            {
+                pnl_Config.Width = pnl_Config.Width + 100;
+                if(pnl_Config.Width >= PW)
+                {
+                    tmr_Config.Stop();
+                    ConfigHidden = false;
+                    Refresh();
+                }
+            }
+            else
+            {
+                pnl_Config.Width = pnl_Config.Width - 100;
+                if (pnl_Config.Width <= PW)
+                {
+                    tmr_Config.Stop();
+                    ConfigHidden = true;
+                    Refresh();
+                }
+            }
+        }
+
+        private void ConfigChange(object sender, EventArgs e)
+        {
+            btn_SaveConfig.BackColor = Color.Yellow;
+        }
+
     }
 }
