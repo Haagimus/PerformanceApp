@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using System;
+using PerformanceApp.Properties;
 
 namespace PerformanceApp
 {
@@ -26,7 +27,6 @@ namespace PerformanceApp
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.lbl_IPA = new System.Windows.Forms.Label();
             this.lbl_IPAVer = new System.Windows.Forms.Label();
             this.btn_IPAUninstall = new System.Windows.Forms.Button();
@@ -63,12 +63,26 @@ namespace PerformanceApp
             this.btn_Run = new System.Windows.Forms.Button();
             this.cmb_Station = new System.Windows.Forms.ComboBox();
             this.pnl_Config = new System.Windows.Forms.Panel();
+            this.tb_MPUserVer = new System.Windows.Forms.TextBox();
+            this.lbl_MPUserVer = new System.Windows.Forms.Label();
+            this.tb_LCUUserVer = new System.Windows.Forms.TextBox();
+            this.lbl_LCUUserVer = new System.Windows.Forms.Label();
+            this.tb_GECAUserVer = new System.Windows.Forms.TextBox();
+            this.lbl_GECAUserVer = new System.Windows.Forms.Label();
+            this.tb_UtilUserVer = new System.Windows.Forms.TextBox();
+            this.lbl_UtilUserVer = new System.Windows.Forms.Label();
+            this.tb_XBCAUserVer = new System.Windows.Forms.TextBox();
+            this.lbl_XBCAUserVer = new System.Windows.Forms.Label();
+            this.tb_DVRUserVer = new System.Windows.Forms.TextBox();
+            this.lbl_DVRUserVer = new System.Windows.Forms.Label();
+            this.tb_IPASUserVer = new System.Windows.Forms.TextBox();
+            this.lbl_IPASUserVer = new System.Windows.Forms.Label();
+            this.btn_SaveConfig = new System.Windows.Forms.Button();
+            this.tb_IPAUserVer = new System.Windows.Forms.TextBox();
+            this.lbl_IPAUserVer = new System.Windows.Forms.Label();
             this.btn_Config = new System.Windows.Forms.Button();
             this.tmr_Config = new System.Windows.Forms.Timer(this.components);
             this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.lbl_IPAUserVer = new System.Windows.Forms.Label();
-            this.tb_IPAUserVer = new System.Windows.Forms.TextBox();
-            this.btn_SaveConfig = new System.Windows.Forms.Button();
             this.pnl_Config.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -84,7 +98,7 @@ namespace PerformanceApp
             // lbl_IPAVer
             // 
             this.lbl_IPAVer.AutoSize = true;
-            this.lbl_IPAVer.Location = new System.Drawing.Point(134, 14);
+            this.lbl_IPAVer.Location = new System.Drawing.Point(140, 14);
             this.lbl_IPAVer.Name = "lbl_IPAVer";
             this.lbl_IPAVer.Size = new System.Drawing.Size(0, 13);
             this.lbl_IPAVer.TabIndex = 1;
@@ -123,7 +137,7 @@ namespace PerformanceApp
             // lbl_IPASVer
             // 
             this.lbl_IPASVer.AutoSize = true;
-            this.lbl_IPASVer.Location = new System.Drawing.Point(134, 39);
+            this.lbl_IPASVer.Location = new System.Drawing.Point(140, 39);
             this.lbl_IPASVer.Name = "lbl_IPASVer";
             this.lbl_IPASVer.Size = new System.Drawing.Size(0, 13);
             this.lbl_IPASVer.TabIndex = 5;
@@ -157,13 +171,13 @@ namespace PerformanceApp
             this.lbl_DVR.Name = "lbl_DVR";
             this.lbl_DVR.Size = new System.Drawing.Size(100, 13);
             this.lbl_DVR.TabIndex = 8;
-            this.lbl_DVR.Text = "DVR Viewer Version";
+            this.lbl_DVR.Text = "DVR Version";
             this.lbl_DVR.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lbl_DVRVer
             // 
             this.lbl_DVRVer.AutoSize = true;
-            this.lbl_DVRVer.Location = new System.Drawing.Point(134, 64);
+            this.lbl_DVRVer.Location = new System.Drawing.Point(140, 64);
             this.lbl_DVRVer.Name = "lbl_DVRVer";
             this.lbl_DVRVer.Size = new System.Drawing.Size(0, 13);
             this.lbl_DVRVer.TabIndex = 9;
@@ -200,7 +214,7 @@ namespace PerformanceApp
             // lbl_XBCAVer
             // 
             this.lbl_XBCAVer.AutoSize = true;
-            this.lbl_XBCAVer.Location = new System.Drawing.Point(134, 89);
+            this.lbl_XBCAVer.Location = new System.Drawing.Point(140, 89);
             this.lbl_XBCAVer.Name = "lbl_XBCAVer";
             this.lbl_XBCAVer.Size = new System.Drawing.Size(0, 13);
             this.lbl_XBCAVer.TabIndex = 13;
@@ -231,13 +245,13 @@ namespace PerformanceApp
             this.lbl_Util.Name = "lbl_Util";
             this.lbl_Util.Size = new System.Drawing.Size(100, 13);
             this.lbl_Util.TabIndex = 16;
-            this.lbl_Util.Text = "IPA Utilites Version";
+            this.lbl_Util.Text = "IPA Utilities Version";
             this.lbl_Util.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lbl_UtilVer
             // 
             this.lbl_UtilVer.AutoSize = true;
-            this.lbl_UtilVer.Location = new System.Drawing.Point(134, 114);
+            this.lbl_UtilVer.Location = new System.Drawing.Point(140, 114);
             this.lbl_UtilVer.Name = "lbl_UtilVer";
             this.lbl_UtilVer.Size = new System.Drawing.Size(0, 13);
             this.lbl_UtilVer.TabIndex = 17;
@@ -268,14 +282,14 @@ namespace PerformanceApp
             this.lbl_GECA.Name = "lbl_GECA";
             this.lbl_GECA.Size = new System.Drawing.Size(100, 13);
             this.lbl_GECA.TabIndex = 20;
-            this.lbl_GECA.Text = "GE Control App Version";
+            this.lbl_GECA.Text = "GECA Version";
             this.lbl_GECA.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbl_GECA.Visible = false;
             // 
             // lbl_GECAVer
             // 
             this.lbl_GECAVer.AutoSize = true;
-            this.lbl_GECAVer.Location = new System.Drawing.Point(134, 139);
+            this.lbl_GECAVer.Location = new System.Drawing.Point(140, 139);
             this.lbl_GECAVer.Name = "lbl_GECAVer";
             this.lbl_GECAVer.Size = new System.Drawing.Size(0, 13);
             this.lbl_GECAVer.TabIndex = 21;
@@ -309,13 +323,13 @@ namespace PerformanceApp
             this.lbl_LCU.Name = "lbl_LCU";
             this.lbl_LCU.Size = new System.Drawing.Size(100, 13);
             this.lbl_LCU.TabIndex = 24;
-            this.lbl_LCU.Text = "Log Capture Utility Version";
+            this.lbl_LCU.Text = "LCU Version";
             this.lbl_LCU.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lbl_LCUVer
             // 
             this.lbl_LCUVer.AutoSize = true;
-            this.lbl_LCUVer.Location = new System.Drawing.Point(134, 164);
+            this.lbl_LCUVer.Location = new System.Drawing.Point(140, 164);
             this.lbl_LCUVer.Name = "lbl_LCUVer";
             this.lbl_LCUVer.Size = new System.Drawing.Size(0, 13);
             this.lbl_LCUVer.TabIndex = 25;
@@ -346,14 +360,14 @@ namespace PerformanceApp
             this.lbl_MP.Name = "lbl_MP";
             this.lbl_MP.Size = new System.Drawing.Size(100, 13);
             this.lbl_MP.TabIndex = 28;
-            this.lbl_MP.Text = "Mission Planner Version";
+            this.lbl_MP.Text = "MP Version";
             this.lbl_MP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbl_MP.Visible = false;
             // 
             // lbl_MPVer
             // 
             this.lbl_MPVer.AutoSize = true;
-            this.lbl_MPVer.Location = new System.Drawing.Point(134, 189);
+            this.lbl_MPVer.Location = new System.Drawing.Point(140, 189);
             this.lbl_MPVer.Name = "lbl_MPVer";
             this.lbl_MPVer.Size = new System.Drawing.Size(0, 13);
             this.lbl_MPVer.TabIndex = 29;
@@ -402,6 +416,7 @@ namespace PerformanceApp
             // 
             // cmb_Station
             // 
+            this.cmb_Station.DataBindings.Add(new System.Windows.Forms.Binding("Name", global::PerformanceApp.Properties.Settings.Default, "StationType", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.cmb_Station.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmb_Station.Items.AddRange(new object[] {
             "Workstation",
@@ -415,6 +430,20 @@ namespace PerformanceApp
             // pnl_Config
             // 
             this.pnl_Config.BackColor = System.Drawing.SystemColors.Control;
+            this.pnl_Config.Controls.Add(this.tb_MPUserVer);
+            this.pnl_Config.Controls.Add(this.lbl_MPUserVer);
+            this.pnl_Config.Controls.Add(this.tb_LCUUserVer);
+            this.pnl_Config.Controls.Add(this.lbl_LCUUserVer);
+            this.pnl_Config.Controls.Add(this.tb_GECAUserVer);
+            this.pnl_Config.Controls.Add(this.lbl_GECAUserVer);
+            this.pnl_Config.Controls.Add(this.tb_UtilUserVer);
+            this.pnl_Config.Controls.Add(this.lbl_UtilUserVer);
+            this.pnl_Config.Controls.Add(this.tb_XBCAUserVer);
+            this.pnl_Config.Controls.Add(this.lbl_XBCAUserVer);
+            this.pnl_Config.Controls.Add(this.tb_DVRUserVer);
+            this.pnl_Config.Controls.Add(this.lbl_DVRUserVer);
+            this.pnl_Config.Controls.Add(this.tb_IPASUserVer);
+            this.pnl_Config.Controls.Add(this.lbl_IPASUserVer);
             this.pnl_Config.Controls.Add(this.btn_SaveConfig);
             this.pnl_Config.Controls.Add(this.tb_IPAUserVer);
             this.pnl_Config.Controls.Add(this.lbl_IPAUserVer);
@@ -422,12 +451,158 @@ namespace PerformanceApp
             this.pnl_Config.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnl_Config.Location = new System.Drawing.Point(0, 0);
             this.pnl_Config.Name = "pnl_Config";
-            this.pnl_Config.Size = new System.Drawing.Size(426, 273);
+            this.pnl_Config.Size = new System.Drawing.Size(24, 273);
             this.pnl_Config.TabIndex = 36;
+            // 
+            // tb_MPUserVer
+            // 
+            this.tb_MPUserVer.Location = new System.Drawing.Point(140, 185);
+            this.tb_MPUserVer.Name = "tb_MPUserVer";
+            this.tb_MPUserVer.Size = new System.Drawing.Size(75, 20);
+            this.tb_MPUserVer.TabIndex = 17;
+            this.tb_MPUserVer.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tb_MPUserVer.TextChanged += new System.EventHandler(this.ConfigChange);
+            // 
+            // lbl_MPUserVer
+            // 
+            this.lbl_MPUserVer.Location = new System.Drawing.Point(34, 189);
+            this.lbl_MPUserVer.Name = "lbl_MPUserVer";
+            this.lbl_MPUserVer.Size = new System.Drawing.Size(100, 13);
+            this.lbl_MPUserVer.TabIndex = 16;
+            this.lbl_MPUserVer.Text = "MP Version";
+            // 
+            // tb_LCUUserVer
+            // 
+            this.tb_LCUUserVer.Location = new System.Drawing.Point(140, 160);
+            this.tb_LCUUserVer.Name = "tb_LCUUserVer";
+            this.tb_LCUUserVer.Size = new System.Drawing.Size(75, 20);
+            this.tb_LCUUserVer.TabIndex = 15;
+            this.tb_LCUUserVer.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tb_LCUUserVer.TextChanged += new System.EventHandler(this.ConfigChange);
+            // 
+            // lbl_LCUUserVer
+            // 
+            this.lbl_LCUUserVer.Location = new System.Drawing.Point(34, 164);
+            this.lbl_LCUUserVer.Name = "lbl_LCUUserVer";
+            this.lbl_LCUUserVer.Size = new System.Drawing.Size(100, 13);
+            this.lbl_LCUUserVer.TabIndex = 14;
+            this.lbl_LCUUserVer.Text = "LCU Version";
+            // 
+            // tb_GECAUserVer
+            // 
+            this.tb_GECAUserVer.Location = new System.Drawing.Point(140, 135);
+            this.tb_GECAUserVer.Name = "tb_GECAUserVer";
+            this.tb_GECAUserVer.Size = new System.Drawing.Size(75, 20);
+            this.tb_GECAUserVer.TabIndex = 13;
+            this.tb_GECAUserVer.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tb_GECAUserVer.TextChanged += new System.EventHandler(this.ConfigChange);
+            // 
+            // lbl_GECAUserVer
+            // 
+            this.lbl_GECAUserVer.Location = new System.Drawing.Point(34, 139);
+            this.lbl_GECAUserVer.Name = "lbl_GECAUserVer";
+            this.lbl_GECAUserVer.Size = new System.Drawing.Size(100, 13);
+            this.lbl_GECAUserVer.TabIndex = 12;
+            this.lbl_GECAUserVer.Text = "GECA Version";
+            // 
+            // tb_UtilUserVer
+            // 
+            this.tb_UtilUserVer.Location = new System.Drawing.Point(140, 110);
+            this.tb_UtilUserVer.Name = "tb_UtilUserVer";
+            this.tb_UtilUserVer.Size = new System.Drawing.Size(75, 20);
+            this.tb_UtilUserVer.TabIndex = 11;
+            this.tb_UtilUserVer.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tb_UtilUserVer.TextChanged += new System.EventHandler(this.ConfigChange);
+            // 
+            // lbl_UtilUserVer
+            // 
+            this.lbl_UtilUserVer.Location = new System.Drawing.Point(34, 114);
+            this.lbl_UtilUserVer.Name = "lbl_UtilUserVer";
+            this.lbl_UtilUserVer.Size = new System.Drawing.Size(100, 13);
+            this.lbl_UtilUserVer.TabIndex = 10;
+            this.lbl_UtilUserVer.Text = "IPA Utilities Version";
+            // 
+            // tb_XBCAUserVer
+            // 
+            this.tb_XBCAUserVer.Location = new System.Drawing.Point(140, 85);
+            this.tb_XBCAUserVer.Name = "tb_XBCAUserVer";
+            this.tb_XBCAUserVer.Size = new System.Drawing.Size(75, 20);
+            this.tb_XBCAUserVer.TabIndex = 9;
+            this.tb_XBCAUserVer.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tb_XBCAUserVer.TextChanged += new System.EventHandler(this.ConfigChange);
+            // 
+            // lbl_XBCAUserVer
+            // 
+            this.lbl_XBCAUserVer.Location = new System.Drawing.Point(34, 89);
+            this.lbl_XBCAUserVer.Name = "lbl_XBCAUserVer";
+            this.lbl_XBCAUserVer.Size = new System.Drawing.Size(100, 13);
+            this.lbl_XBCAUserVer.TabIndex = 8;
+            this.lbl_XBCAUserVer.Text = "XBCA Version";
+            // 
+            // tb_DVRUserVer
+            // 
+            this.tb_DVRUserVer.Location = new System.Drawing.Point(140, 60);
+            this.tb_DVRUserVer.Name = "tb_DVRUserVer";
+            this.tb_DVRUserVer.Size = new System.Drawing.Size(75, 20);
+            this.tb_DVRUserVer.TabIndex = 7;
+            this.tb_DVRUserVer.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tb_DVRUserVer.TextChanged += new System.EventHandler(this.ConfigChange);
+            // 
+            // lbl_DVRUserVer
+            // 
+            this.lbl_DVRUserVer.Location = new System.Drawing.Point(34, 64);
+            this.lbl_DVRUserVer.Name = "lbl_DVRUserVer";
+            this.lbl_DVRUserVer.Size = new System.Drawing.Size(100, 13);
+            this.lbl_DVRUserVer.TabIndex = 6;
+            this.lbl_DVRUserVer.Text = "DVR Version";
+            // 
+            // tb_IPASUserVer
+            // 
+            this.tb_IPASUserVer.Location = new System.Drawing.Point(140, 35);
+            this.tb_IPASUserVer.Name = "tb_IPASUserVer";
+            this.tb_IPASUserVer.Size = new System.Drawing.Size(75, 20);
+            this.tb_IPASUserVer.TabIndex = 5;
+            this.tb_IPASUserVer.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tb_IPASUserVer.TextChanged += new System.EventHandler(this.ConfigChange);
+            // 
+            // lbl_IPASUserVer
+            // 
+            this.lbl_IPASUserVer.Location = new System.Drawing.Point(34, 39);
+            this.lbl_IPASUserVer.Name = "lbl_IPASUserVer";
+            this.lbl_IPASUserVer.Size = new System.Drawing.Size(100, 13);
+            this.lbl_IPASUserVer.TabIndex = 4;
+            this.lbl_IPASUserVer.Text = "IPAS Version";
+            // 
+            // btn_SaveConfig
+            // 
+            this.btn_SaveConfig.Location = new System.Drawing.Point(329, 220);
+            this.btn_SaveConfig.Name = "btn_SaveConfig";
+            this.btn_SaveConfig.Size = new System.Drawing.Size(80, 40);
+            this.btn_SaveConfig.TabIndex = 3;
+            this.btn_SaveConfig.Text = "Save Config";
+            this.btn_SaveConfig.UseVisualStyleBackColor = true;
+            this.btn_SaveConfig.Click += new System.EventHandler(this.SaveConfig);
+            // 
+            // tb_IPAUserVer
+            // 
+            this.tb_IPAUserVer.Location = new System.Drawing.Point(140, 10);
+            this.tb_IPAUserVer.Name = "tb_IPAUserVer";
+            this.tb_IPAUserVer.Size = new System.Drawing.Size(75, 20);
+            this.tb_IPAUserVer.TabIndex = 2;
+            this.tb_IPAUserVer.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tb_IPAUserVer.TextChanged += new System.EventHandler(this.ConfigChange);
+            // 
+            // lbl_IPAUserVer
+            // 
+            this.lbl_IPAUserVer.Location = new System.Drawing.Point(34, 14);
+            this.lbl_IPAUserVer.Name = "lbl_IPAUserVer";
+            this.lbl_IPAUserVer.Size = new System.Drawing.Size(100, 13);
+            this.lbl_IPAUserVer.TabIndex = 1;
+            this.lbl_IPAUserVer.Text = "IPA Version";
             // 
             // btn_Config
             // 
-            this.btn_Config.Image = ((System.Drawing.Image)(resources.GetObject("btn_Config.Image")));
+            this.btn_Config.Image = global::PerformanceApp.Properties.Resources.menu_icon;
             this.btn_Config.Location = new System.Drawing.Point(0, 0);
             this.btn_Config.Margin = new System.Windows.Forms.Padding(0);
             this.btn_Config.Name = "btn_Config";
@@ -444,33 +619,7 @@ namespace PerformanceApp
             // 
             // tooltip
             // 
-            this.tooltip.AutomaticDelay = 1000;
-            // 
-            // lbl_IPAUserVer
-            // 
-            this.lbl_IPAUserVer.AutoSize = true;
-            this.lbl_IPAUserVer.Location = new System.Drawing.Point(46, 31);
-            this.lbl_IPAUserVer.Name = "lbl_IPAUserVer";
-            this.lbl_IPAUserVer.Size = new System.Drawing.Size(62, 13);
-            this.lbl_IPAUserVer.TabIndex = 1;
-            this.lbl_IPAUserVer.Text = "IPA Version";
-            // 
-            // tb_IPAUserVer
-            // 
-            this.tb_IPAUserVer.Location = new System.Drawing.Point(137, 28);
-            this.tb_IPAUserVer.Name = "tb_IPAUserVer";
-            this.tb_IPAUserVer.Size = new System.Drawing.Size(100, 20);
-            this.tb_IPAUserVer.TabIndex = 2;
-            this.tb_IPAUserVer.TextChanged += new System.EventHandler(ConfigChange);
-            // 
-            // btn_SaveConfig
-            // 
-            this.btn_SaveConfig.Location = new System.Drawing.Point(329, 220);
-            this.btn_SaveConfig.Name = "btn_SaveConfig";
-            this.btn_SaveConfig.Size = new System.Drawing.Size(80, 40);
-            this.btn_SaveConfig.TabIndex = 3;
-            this.btn_SaveConfig.Text = "Save Config";
-            this.btn_SaveConfig.UseVisualStyleBackColor = true;
+            this.tooltip.AutomaticDelay = 2500;
             // 
             // MainWindow
             // 
@@ -567,6 +716,20 @@ namespace PerformanceApp
         private TextBox tb_IPAUserVer;
         private Label lbl_IPAUserVer;
         private Button btn_SaveConfig;
+        private TextBox tb_MPUserVer;
+        private Label lbl_MPUserVer;
+        private TextBox tb_LCUUserVer;
+        private Label lbl_LCUUserVer;
+        private TextBox tb_GECAUserVer;
+        private Label lbl_GECAUserVer;
+        private TextBox tb_UtilUserVer;
+        private Label lbl_UtilUserVer;
+        private TextBox tb_XBCAUserVer;
+        private Label lbl_XBCAUserVer;
+        private TextBox tb_DVRUserVer;
+        private Label lbl_DVRUserVer;
+        private TextBox tb_IPASUserVer;
+        private Label lbl_IPASUserVer;
     }
 }
 

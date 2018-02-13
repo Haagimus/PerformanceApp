@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Xml;
 using static PerformanceApp.MainWindow;
 using static PerformanceApp.Core.Globals;
+using PerformanceApp.Properties;
 
 namespace PerformanceApp
 {
@@ -19,14 +20,14 @@ namespace PerformanceApp
         {
             public static bool firstRun = true;
 
-            public static string IPA_Ver = "2.6.0";
-            public static string IPAS_Ver = "2.6.0";
-            public static string DVR_Ver = "1.1.0";
-            public static string XBCA_Ver = "1.3.0";
-            public static string Util_Ver = "2.6.0";
-            public static string GECA_Ver = "1.0.0";
-            public static string LCU_Ver = "1.0.0";
-            public static string MP_Ver = "1.0.0";
+            public static string IPA_Ver = Settings.Default.IPAUserVer;
+            public static string IPAS_Ver = Settings.Default.IPASUserVer;
+            public static string DVR_Ver = Settings.Default.DVRUserVer;
+            public static string XBCA_Ver = Settings.Default.XBCAUserVer;
+            public static string Util_Ver = Settings.Default.UtilUserVer;
+            public static string GECA_Ver = Settings.Default.GECAUserVer;
+            public static string LCU_Ver = Settings.Default.LCUUserVer;
+            public static string MP_Ver = Settings.Default.MPUserVer;
 
             public static string HKLM32 = @"SOFTWARE\ForceX Technologies";
             public static string HKLM64 = @"SOFTWARE\Wow6432Node\ForceX Technologies";

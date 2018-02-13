@@ -1,8 +1,10 @@
 ﻿using Microsoft.Win32;
+using PerformanceApp.Properties;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using static PerformanceApp.Core;
 using static PerformanceApp.Core.Globals;
@@ -23,6 +25,16 @@ namespace PerformanceApp
         {
             SetLists();
             UpdateVersions(false);
+            tb_IPAUserVer.Text = Settings.Default.IPAUserVer;
+            tb_IPASUserVer.Text = Settings.Default.IPASUserVer;
+            tb_DVRUserVer.Text = Settings.Default.DVRUserVer;
+            tb_XBCAUserVer.Text = Settings.Default.XBCAUserVer;
+            tb_UtilUserVer.Text = Settings.Default.UtilUserVer;
+            tb_GECAUserVer.Text = Settings.Default.GECAUserVer;
+            tb_LCUUserVer.Text = Settings.Default.LCUUserVer;
+            tb_MPUserVer.Text = Settings.Default.MPUserVer;
+            btn_SaveConfig.BackColor = SystemColors.Control;
+            cmb_Station.SelectedIndex = Settings.Default.StationType;
         }
 
         public void SetLists()
@@ -170,6 +182,8 @@ namespace PerformanceApp
 
             StationID = (string)comboBox.SelectedItem;
             UpdateStation(comboBox);
+            Settings.Default.StationType = cmb_Station.SelectedIndex;
+            Settings.Default.Save();
         }
 
         public void UpdateStation(object Sender)
@@ -400,14 +414,14 @@ namespace PerformanceApp
 
             if(ConfigHidden)
             {
-                button.Image = global::PerformanceApp.Properties.Resources.close_icon;
+                button.Image = Resources.close_icon;
                 tooltip.SetToolTip(btn_Config, "Close the configuration settings");
                 tmr_Config.Start();
                 PW = 425;
             }
             else
             {
-                button.Image = global::PerformanceApp.Properties.Resources.menu_icon;
+                button.Image = Resources.menu_icon;
                 tooltip.SetToolTip(btn_Config, "Open the configuration settings");
                 tmr_Config.Start();
                 PW = 24;
@@ -440,8 +454,37 @@ namespace PerformanceApp
 
         private void ConfigChange(object sender, EventArgs e)
         {
-            btn_SaveConfig.BackColor = Color.Yellow;
+            string ver = ((TextBox)sender).Text;
+
+            if (ver == "")
+            {
+                ((TextBox)sender).BackColor = SystemColors.Window;
+                return;
+            }
+
+            if (Regex.IsMatch(ver, "[0-9.]+"))
+            {
+                ((TextBox)sender).BackColor = SystemColors.Window;
+                btn_SaveConfig.BackColor = Color.Yellow; ;
+            }
+            else
+            {
+                ((TextBox)sender).BackColor = Color.Red;
+            }
         }
 
+        private void SaveConfig(object sender, EventArgs e)
+        {
+            Settings.Default.IPAUserVer = tb_IPAUserVer.Text;
+            Settings.Default.IPASUserVer = tb_IPASUserVer.Text;
+            Settings.Default.DVRUserVer = tb_DVRUserVer.Text;
+            Settings.Default.XBCAUserVer = tb_XBCAUserVer.Text;
+            Settings.Default.UtilUserVer = tb_UtilUserVer.Text;
+            Settings.Default.GECAUserVer = tb_GECAUserVer.Text;
+            Settings.Default.LCUUserVer = tb_LCUUserVer.Text;
+            Settings.Default.MPUserVer = tb_MPUserVer.Text;
+            Settings.Default.Save();
+            btn_SaveConfig.BackColor = SystemColors.Control;
+        }
     }
 }
